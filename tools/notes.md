@@ -1,0 +1,1 @@
+Nnati alurnya untuk menambakan isi ke dalam file yang perlu di lakukan adlah kita mengambil ujung utamanya kemudain ai mengembangkan dan menjadikan json notion lansung sehinga nanti tinggl di drop dan di push 
