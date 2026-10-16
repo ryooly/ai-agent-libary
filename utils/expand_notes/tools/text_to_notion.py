@@ -2,7 +2,7 @@ import json
 import re
 from typing import Optional
 
-from ..llm_calling import call_llm
+from ..llm_model import ask
 from .convert_prompt import build_convert_prompt
 
 _ALLOWED_TYPES = {
@@ -67,7 +67,7 @@ def text_to_notion_blocks(
     **llm_kwargs,
 ) -> list[dict]:
     prompt = build_convert_prompt(plain_text)
-    raw = call_llm(prompt, model=model, **llm_kwargs)
+    raw = ask(prompt, model=model, **llm_kwargs)
 
     data = json.loads(_extract_json(raw))
 

@@ -27,4 +27,9 @@ def select_model(model_name: str):
             f"Unknown model '{model_name}'. Available models: {available}"
         ) from exc
 
+
+from .center import ask, chat
+
+__all__ = ["select_model", "list_models", "ask", "chat"]
+
 # Pikirkan gimana biar kita gak pelrlu nambah list mmodel setiap menambahkn model baru 

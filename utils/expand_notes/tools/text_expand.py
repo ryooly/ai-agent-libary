@@ -1,4 +1,4 @@
-from ..llm_calling import call_llm
+from ..llm_model import ask
 
 EXPAND_SENTENCE_PROMPT = """You are a professional writing assistant.
 
@@ -22,4 +22,4 @@ def build_expand_prompt(text: str) -> str:
 
 def expand_text(text: str, model: str = "openai", **llm_kwargs) -> str:
     prompt = build_expand_prompt(text)
-    return call_llm(prompt, model=model, **llm_kwargs)
+    return ask(prompt, model=model, **llm_kwargs)
