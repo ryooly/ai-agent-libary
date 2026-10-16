@@ -57,3 +57,6 @@ def append_tool_results(messages, raw, results) -> list:
         )
 
     return messages
+
+
+# Pikirkn untuk menjadikan smeaunya satu aja 

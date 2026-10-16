@@ -43,3 +43,6 @@ def call_llm(
         messages = adapter.append_tool_results(messages, response["raw"], results)
 
     raise RuntimeError(f"Tool-calling exceeded max_turns ({max_turns}) without a final answer.")
+
+
+# Saya berpikir Bagaiaman jika llm dijalanka secara urut, seperti dia berjalan berdasarkan route yang sudah dikasih 

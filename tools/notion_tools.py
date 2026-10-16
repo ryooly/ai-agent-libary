@@ -48,7 +48,7 @@ class NotionRemote:
 
     def add_text(self, page_id: str, fill: dict) -> dict:
         block = {"children": [fill]}
-        return self._patch(f"/blocks/{page_id}/children", block)
+        return self._patch(f"/blocks/{page_id}/children", block) 
 
     def edit_title(self, page_id: str, title: str) -> dict:
         payload = {
@@ -60,7 +60,7 @@ class NotionRemote:
 
     def fill_content(self, page_id: str, fills: list[dict]) -> dict:
         block = {"children": fills}
-        return self._patch(f"/blocks/{page_id}/children", block)
+        return self._patch(f"/blocks/{page_id}/children", block) # added a expand text function here, so users insert a text then ai ll send it to the a function with llm and process it there 
 
     def _resolve_parent(self, parent_folder: Optional[str] = None) -> dict:
         if parent_folder:

@@ -81,7 +81,6 @@ def text_to_notion_blocks(
 
 
 def text_to_notion_page(
-    page_id: str,
     plain_text: str,
     model: str = "openai",
     **llm_kwargs,
@@ -89,4 +88,4 @@ def text_to_notion_page(
     from tools.notion_tools import fill_content
 
     blocks = text_to_notion_blocks(plain_text, model=model, **llm_kwargs)
-    return fill_content(page_id, blocks)
+    return blocks

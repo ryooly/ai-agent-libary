@@ -26,3 +26,5 @@ def select_model(model_name: str):
         raise ValueError(
             f"Unknown model '{model_name}'. Available models: {available}"
         ) from exc
+
+# Pikirkan gimana biar kita gak pelrlu nambah list mmodel setiap menambahkn model baru 
