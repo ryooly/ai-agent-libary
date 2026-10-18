@@ -58,8 +58,11 @@ class NotionRemote:
         }
         return self._patch(f"/pages/{page_id}", payload)
 
-    def fill_content(self, page_id: str, fills: list[dict]) -> dict:
-        block = {"children": fills}
+    def fill_content(self, page_id: str, text: str, model: str = "openai") -> dict:
+        from utils.expand_notes.tool_gateway import expand_note
+
+        blocks = expand_note(text, model=model)
+        block = {"children": blocks}
         return self._patch(f"/blocks/{page_id}/children", block) # added a expand text function here, so users insert a text then ai ll send it to the a function with llm and process it there 
 
     def _resolve_parent(self, parent_folder: Optional[str] = None) -> dict:
@@ -106,5 +109,5 @@ def edit_title(page_id: str, title: str) -> dict:
     return _get_client().edit_title(page_id, title)
 
 
-def fill_content(page_id: str, fills: list[dict]) -> dict:
-    return _get_client().fill_content(page_id, fills)
+def fill_content(page_id: str, text: str, model: str = "openai") -> dict:
+    return _get_client().fill_content(page_id, text, model)
