@@ -2,6 +2,8 @@ import os
 import requests
 from typing import Optional
 
+from langchain_core.tools import tool
+
 
 class NotionRemote:
 
@@ -63,7 +65,7 @@ class NotionRemote:
 
         blocks = expand_note(text, model=model)
         block = {"children": blocks}
-        return self._patch(f"/blocks/{page_id}/children", block) # added a expand text function here, so users insert a text then ai ll send it to the a function with llm and process it there 
+        return self._patch(f"/blocks/{page_id}/children", block) 
 
     def _resolve_parent(self, parent_folder: Optional[str] = None) -> dict:
         if parent_folder:
@@ -93,21 +95,67 @@ def _get_client() -> NotionRemote:
     return _client
 
 
+@tool
 def create_folder(title: str, parent_folder: Optional[str] = None) -> dict:
+    """Create a new folder page in Notion.
+
+    Args:
+        title: The name of the folder to create.
+        parent_folder: Optional id of a parent page/folder. Omit to create at the workspace root.
+
+    Returns the created Notion folder page as a dictionary, including its new page id.
+    """
     return _get_client().create_folder(title, parent_folder)
 
 
+@tool
 def create_file(title: str, parent_folder: Optional[str] = None) -> dict:
+    """Create a new blank file page in Notion.
+
+    Args:
+        title: The name of the file/page to create.
+        parent_folder: Optional id of a parent page/folder. Omit to create at the workspace root.
+
+    Returns the created Notion page as a dictionary, including its new page id.
+    """
     return _get_client().create_file(title, parent_folder)
 
 
+@tool
 def add_text(page_id: str, fill: dict) -> dict:
+    """Append a single raw block to an existing Notion page.
+
+    Args:
+        page_id: The id of the target Notion page or block.
+        fill: A Notion block dictionary (e.g. a paragraph block) to append as a child.
+
+    Returns the Notion API response as a dictionary.
+    """
     return _get_client().add_text(page_id, fill)
 
 
+@tool
 def edit_title(page_id: str, title: str) -> dict:
+    """Rename the title of an existing Notion page.
+
+    Args:
+        page_id: The id of the Notion page to rename.
+        title: The new title text.
+
+    Returns the Notion API response as a dictionary.
+    """
     return _get_client().edit_title(page_id, title)
 
 
+@tool
 def fill_content(page_id: str, text: str, model: str = "openai") -> dict:
+    """Expand raw text into rich Notion blocks and append them to a page.
+
+    Args:
+        page_id: The id of the target Notion page.
+        text: The raw short text to expand into structured content.
+        model: The LLM provider used for expansion, e.g. "openai" or "anthropic".
+
+    Returns the Notion API response as a dictionary.
+    """
     return _get_client().fill_content(page_id, text, model)
