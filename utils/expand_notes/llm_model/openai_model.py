@@ -2,11 +2,14 @@ import os
 
 from openai import OpenAI
 
-DEFAULT_MODEL = "gpt-4o-mini"
+DEFAULT_MODEL = "qwen/qwen3.8-27b"
 
 
-def _client(api_key: str | None = None) -> OpenAI:
-    return OpenAI(api_key=api_key or os.getenv("OPENAI_API_KEY"))
+def _client(api_key):
+    return OpenAI(
+        api_key=api_key or os.getenv("OPENAI_API_KEY") or os.getenv("GROQ_API_KEY"),
+        base_url="https://api.groq.com/openai/v1"  # <-- Tambahkan baris ini
+    )
 
 
 def run(

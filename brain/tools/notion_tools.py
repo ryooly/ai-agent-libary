@@ -1,8 +1,12 @@
+import logging
 import os
 import requests
 from typing import Optional
 
 from langchain_core.tools import tool
+
+
+logger = logging.getLogger("brain.notion")
 
 
 class NotionRemote:
@@ -61,6 +65,13 @@ class NotionRemote:
         return self._patch(f"/pages/{page_id}", payload)
 
     def fill_content(self, page_id: str, text: str, model: str = "openai") -> dict:
+        import sys
+        from pathlib import Path
+
+        project_root = str(Path(__file__).resolve().parent.parent.parent)
+        if project_root not in sys.path:
+            sys.path.insert(0, project_root)
+
         from utils.expand_notes.tool_gateway import expand_note
 
         blocks = expand_note(text, model=model)
@@ -74,13 +85,19 @@ class NotionRemote:
 
     def _post(self, endpoint: str, payload: dict) -> dict:
         url = f"{self.base_url}{endpoint}"
+        logger.info("POST %s", endpoint)
         resp = requests.post(url, headers=self._headers, json=payload)
+        if resp.status_code >= 400:
+            logger.error("POST %s failed (%s): %s", endpoint, resp.status_code, resp.text[:300])
         resp.raise_for_status()
         return resp.json()
 
     def _patch(self, endpoint: str, payload: dict) -> dict:
         url = f"{self.base_url}{endpoint}"
+        logger.info("PATCH %s", endpoint)
         resp = requests.patch(url, headers=self._headers, json=payload)
+        if resp.status_code >= 400:
+            logger.error("PATCH %s failed (%s): %s", endpoint, resp.status_code, resp.text[:300])
         resp.raise_for_status()
         return resp.json()
 
@@ -105,7 +122,10 @@ def create_folder(title: str, parent_folder: Optional[str] = None) -> dict:
 
     Returns the created Notion folder page as a dictionary, including its new page id.
     """
-    return _get_client().create_folder(title, parent_folder)
+    logger.info("create_folder title=%r parent=%s", title, parent_folder or "workspace root")
+    result = _get_client().create_folder(title, parent_folder)
+    logger.info("Folder created: page_id=%s", result.get("id"))
+    return result
 
 
 @tool
@@ -118,7 +138,10 @@ def create_file(title: str, parent_folder: Optional[str] = None) -> dict:
 
     Returns the created Notion page as a dictionary, including its new page id.
     """
-    return _get_client().create_file(title, parent_folder)
+    logger.info("create_file title=%r parent=%s", title, parent_folder or "workspace root")
+    result = _get_client().create_file(title, parent_folder)
+    logger.info("File created: page_id=%s", result.get("id"))
+    return result
 
 
 @tool
@@ -131,6 +154,7 @@ def add_text(page_id: str, fill: dict) -> dict:
 
     Returns the Notion API response as a dictionary.
     """
+    logger.info("add_text page_id=%s block_type=%s", page_id, fill.get("type"))
     return _get_client().add_text(page_id, fill)
 
 
@@ -144,6 +168,7 @@ def edit_title(page_id: str, title: str) -> dict:
 
     Returns the Notion API response as a dictionary.
     """
+    logger.info("edit_title page_id=%s new_title=%r", page_id, title)
     return _get_client().edit_title(page_id, title)
 
 
@@ -158,4 +183,7 @@ def fill_content(page_id: str, text: str, model: str = "openai") -> dict:
 
     Returns the Notion API response as a dictionary.
     """
-    return _get_client().fill_content(page_id, text, model)
+    logger.info("fill_content page_id=%s model=%s text=%r", page_id, model, text[:80])
+    result = _get_client().fill_content(page_id, text, model)
+    logger.info("fill_content done: %d block(s) appended", len(result.get("results", [])))
+    return result

@@ -1,6 +1,6 @@
 from typing import Optional
 
-DEFAULT_MODEL = "openai"
+DEFAULT_MODEL = "groq"
 
 
 def ask(

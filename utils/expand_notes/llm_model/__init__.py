@@ -5,6 +5,8 @@ _MODEL_REGISTRY = {
     "gpt": "openai_model",
     "anthropic": "anthropic_model",
     "claude": "anthropic_model",
+    "groq": "groq_model",
+    "llama": "groq_model",
 }
 
 

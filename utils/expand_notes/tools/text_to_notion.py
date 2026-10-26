@@ -27,10 +27,16 @@ def _extract_json(raw: str) -> str:
     if fence:
         cleaned = fence.group(1).strip()
 
-    start = cleaned.find("[")
-    end = cleaned.rfind("]")
-    if start != -1 and end != -1:
-        return cleaned[start : end + 1]
+    candidates = []
+    for open_ch, close_ch in (("{", "}"), ("[", "]")):
+        start = cleaned.find(open_ch)
+        end = cleaned.rfind(close_ch)
+        if start != -1 and end != -1 and end > start:
+            candidates.append((start, cleaned[start : end + 1]))
+
+    if candidates:
+        candidates.sort(key=lambda item: item[0])
+        return candidates[0][1]
 
     return cleaned
 
@@ -67,9 +73,16 @@ def text_to_notion_blocks(
     **llm_kwargs,
 ) -> list[dict]:
     prompt = build_convert_prompt(plain_text)
-    raw = ask(prompt, model=model, **llm_kwargs)
+
+    try:
+        raw = ask(prompt, model=model, response_format={"type": "json_object"}, **llm_kwargs)
+    except Exception:
+        raw = ask(prompt, model=model, **llm_kwargs)
 
     data = json.loads(_extract_json(raw))
+
+    if isinstance(data, dict):
+        data = data.get("blocks", [])
 
     blocks = []
     for block in data:

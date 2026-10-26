@@ -1,0 +1,14 @@
+# Agent brain (LangChain function-calling agent)
+langchain>=1.0.0
+langchain-core>=1.0.0
+langchain-openai>=1.0.0
+
+# LLM provider SDKs (used by utils/expand_notes/llm_model adapters)
+openai>=2.0.0
+anthropic>=0.40.0
+
+# Notion API via raw HTTP (brain/tools/notion_tools.py)
+requests>=2.32.0
+
+# .env loading (optional - currently env vars are set manually in PowerShell)
+python-dotenv>=1.0.0

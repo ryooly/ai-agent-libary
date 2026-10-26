@@ -1,7 +1,7 @@
 CONVERT_TEXT_TO_NOTION_PROMPT = """You are an expert Notion content formatter.
 
-Convert the PLAIN TEXT below into an array of Notion API-compatible block objects.
-Return ONLY a JSON array — no prose, no markdown fences.
+Convert the PLAIN TEXT below into Notion API-compatible block objects.
+Return ONLY a single JSON object with one top-level key "blocks" whose value is an array of block objects — no prose, no markdown fences.
 
 BLOCK TYPES YOU MAY USE (choose based on the text's structure and meaning):
 - "paragraph"           -> normal body text
@@ -50,7 +50,8 @@ Steps:
 2. Build"
 
 Output:
-[
+{
+  "blocks": [
   {"object":"block","type":"heading_1","heading_1":{"rich_text":[{"type":"text","text":{"content":"Goals"},"annotations":{}}]}},
   {"object":"block","type":"bulleted_list_item","bulleted_list_item":{"rich_text":[{"type":"text","text":{"content":"Ship the MVP"},"annotations":{}}]}},
   {"object":"block","type":"bulleted_list_item","bulleted_list_item":{"rich_text":[{"type":"text","text":{"content":"Finish"},"annotations":{"bold":true}},{"type":"text","text":{"content":": the design"},"annotations":{}}]}},
@@ -58,6 +59,7 @@ Output:
   {"object":"block","type":"numbered_list_item","numbered_list_item":{"rich_text":[{"type":"text","text":{"content":"Plan"},"annotations":{}}]}},
   {"object":"block","type":"numbered_list_item","numbered_list_item":{"rich_text":[{"type":"text","text":{"content":"Build"},"annotations":{}}]}}
 ]
+}
 
 PLAIN TEXT TO CONVERT:
 \"\"\"{text}\"\"\"
