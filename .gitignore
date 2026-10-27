@@ -1,0 +1,53 @@
+# ===== Secrets / sensitive (NEVER commit) =====
+.env
+.env.*
+*.env
+!.env.example
+*.pem
+*.key
+secrets.*
+credentials*
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# ===== Virtual environments =====
+venv/
+.venv/
+env/
+ENV/
+
+# ===== Testing / coverage =====
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+.coverage.*
+
+# ===== Type checkers / linters =====
+.mypy_cache/
+.ruff_cache/
+
+# ===== Editors / IDEs =====
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ===== OS files =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== Logs =====
+*.log
+logs/

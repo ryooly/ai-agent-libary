@@ -19,6 +19,29 @@ _ALLOWED_TYPES = {
     "divider",
 }
 
+_NOTION_CODE_LANGUAGES = {
+    "abap", "arduino", "bash", "basic", "c", "clojure", "coffeescript",
+    "c++", "c#", "css", "dart", "diff", "docker", "elixir", "elm", "erlang",
+    "flow", "fortran", "f#", "gherkin", "glsl", "go", "graphql", "groovy",
+    "haskell", "html", "java", "javascript", "json", "julia", "kotlin",
+    "latex", "less", "lisp", "livescript", "lua", "makefile", "markdown",
+    "markup", "matlab", "mermaid", "nix", "objective-c", "ocaml", "pascal",
+    "perl", "php", "plain text", "powershell", "prolog", "protobuf", "python",
+    "r", "reason", "ruby", "rust", "sass", "scala", "scheme", "scss", "shell",
+    "sql", "swift", "typescript", "vb.net", "verilog", "vhdl", "visual basic",
+    "webassembly", "xml", "yaml", "java/c/c++/c#",
+}
+
+_DEFAULT_CODE_LANGUAGE = "plain text"
+
+
+def _safe_code_language(value) -> str:
+    if isinstance(value, str):
+        candidate = value.strip().lower()
+        if candidate in _NOTION_CODE_LANGUAGES:
+            return candidate
+    return _DEFAULT_CODE_LANGUAGE
+
 
 def _extract_json(raw: str) -> str:
     cleaned = raw.strip()
@@ -64,6 +87,10 @@ def _normalize_block(block: dict) -> Optional[dict]:
         normalized_rt.append(entry)
 
     new_body = {**body, "rich_text": normalized_rt}
+
+    if block_type == "code":
+        new_body["language"] = _safe_code_language(body.get("language"))
+
     return {"object": "block", "type": block_type, block_type: new_body}
 
 

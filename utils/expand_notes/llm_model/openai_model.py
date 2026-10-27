@@ -3,6 +3,7 @@ import os
 from openai import OpenAI
 
 DEFAULT_MODEL = "qwen/qwen3.8-27b"
+DEFAULT_MAX_TOKENS = 900
 
 
 def _client(api_key):
@@ -17,6 +18,7 @@ def run(
     model: str = DEFAULT_MODEL,
     api_key: str | None = None,
     system: str | None = None,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
     **kwargs,
 ) -> dict:
     if system:
@@ -24,7 +26,7 @@ def run(
 
     kwargs.pop("tools", None)
 
-    params = {"model": model, "messages": messages}
+    params = {"model": model, "messages": messages, "max_tokens": max_tokens}
     params.update(kwargs)
 
     resp = _client(api_key).chat.completions.create(**params)

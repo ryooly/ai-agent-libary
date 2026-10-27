@@ -6,6 +6,8 @@ DEFAULT_MODEL = "llama-3.3-70b-versatile"
 
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 
+DEFAULT_MAX_TOKENS = 900
+
 
 def _client(api_key: str | None = None) -> OpenAI:
     return OpenAI(
@@ -19,6 +21,7 @@ def run(
     model: str = DEFAULT_MODEL,
     api_key: str | None = None,
     system: str | None = None,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
     **kwargs,
 ) -> dict:
     if system:
@@ -26,7 +29,7 @@ def run(
 
     kwargs.pop("tools", None)
 
-    params = {"model": model, "messages": messages}
+    params = {"model": model, "messages": messages, "max_tokens": max_tokens}
     params.update(kwargs)
 
     resp = _client(api_key).chat.completions.create(**params)

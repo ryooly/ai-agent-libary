@@ -3,6 +3,7 @@ import os
 from anthropic import Anthropic
 
 DEFAULT_MODEL = "claude-3-5-sonnet-latest"
+DEFAULT_MAX_TOKENS = 900
 
 
 def _client(api_key: str | None = None) -> Anthropic:
@@ -14,7 +15,7 @@ def run(
     model: str = DEFAULT_MODEL,
     api_key: str | None = None,
     system: str | None = None,
-    max_tokens: int = 1024,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
     **kwargs,
 ) -> dict:
     kwargs.pop("tools", None)

@@ -30,13 +30,15 @@ SYSTEM_PROMPT = (
 
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 
+MAX_TOKENS = 900
 
-def build_llm(model: str = "qwen/qwen3.8-27b", temperature: float = 0.2) -> ChatOpenAI:
+
+def build_llm(model: str = "qwen/qwen3.8-27b", temperature: float = 0.2, max_tokens: int = MAX_TOKENS) -> ChatOpenAI:
     api_key = os.getenv("GROQ_API_KEY", "")
     if not api_key:
         raise ValueError("Groq API key is required. Set GROQ_API_KEY env var or pass it explicitly.")
-    logger.info("Building LLM %s (temperature=%s) via %s", model, temperature, GROQ_BASE_URL)
-    return ChatOpenAI(model=model, temperature=temperature, api_key=api_key, base_url=GROQ_BASE_URL)
+    logger.info("Building LLM %s (temperature=%s, max_tokens=%s) via %s", model, temperature, max_tokens, GROQ_BASE_URL)
+    return ChatOpenAI(model=model, temperature=temperature, api_key=api_key, base_url=GROQ_BASE_URL, max_tokens=max_tokens)
 
 
 def build_agent(llm: ChatOpenAI | None = None):
@@ -66,15 +68,3 @@ def setup_console_logging(level: int = logging.INFO) -> None:
         format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
         datefmt="%H:%M:%S",
     )
-
-
-if __name__ == "__main__":
-    import sys
-
-    setup_console_logging()
-    subject = " ".join(sys.argv[1:]) or "My Notes"
-    task = (
-        f"Create a new Notion folder called '{subject}', then create a page inside it "
-        f"with title '{subject}' and fill it with expanded content about {subject}."
-    )
-    print(run(task))

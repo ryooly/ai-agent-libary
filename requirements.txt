@@ -10,5 +10,8 @@ anthropic>=0.40.0
 # Notion API via raw HTTP (brain/tools/notion_tools.py)
 requests>=2.32.0
 
+# Telegram bot connection (connection/telegram.py)
+pyTelegramBotAPI>=4.23.0
+
 # .env loading (optional - currently env vars are set manually in PowerShell)
 python-dotenv>=1.0.0
